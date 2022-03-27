@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>KryptX - AES</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/base_style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/encryption_pages.css') }}" />
+        <link rel='icon' href="{{ url_for('static',filename='files/favicon.ico') }}" type='image/x-icon'/ >
+        <script src="{{ url_for('static',filename='js/base_script.js') }}"></script>
+    </head>
+    <body>
+        <nav class="navigation_bar">
+            <div class="logo_container">
+                <a href="/"><img src="{{ url_for('static',filename='files/logo.png') }}" alt="logo" class="logo"/></a>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>ALL ENCRYPTION METHODS</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in allAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HISTORICAL</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in historicalAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>OUTDATED</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in outdatedAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>MODERN</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in modernAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HASHING</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in hashingAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <div class="central_zone">
+            <div id="encryption_zone">
+                <div id="buttons_zone">
+                    <button type="button" id="encrypt_button" class="encrypt_decrypt_button" onclick="encryptButtonClicked();">Encrypt</button>
+                    <button type="button" id="decrypt_button" class="encrypt_decrypt_button" onclick="decryptButtonClicked();">Decrypt</button>
+                </div>
+                {% if mode == "displayEncryptedText" %}
+                <div id="processed_text">
+                    <span>Encrypted text:</span>
+                    <button onclick="copyToClipboard('encrypted_Text')">Copy</button>
+                    <p id="encrypted_Text">{{ encryptedMessage }}</p>
+                </div>
+                {% elif mode == "displayDecryptedText" %}
+                <div id="processed_text">
+                    <span>Decrypted text:</span>
+                    <button onclick="copyToClipboard('decrypted_Text')">Copy</button>
+                    <p id="decrypted_Text">{{ decryptedMessage }}</p>
+                </div>
+                {% endif %}
+                <div id="encryption_form">
+                    <form method="post" action="/aes/encryption">
+                        <p>
+                            <label for="clear_message_area">Enter the message you want to encrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="clear_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="encryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="encryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Encrypt" />
+                        </p>
+                    </form>
+                </div>
+                <div id="decryption_form">
+                    <form method="post" action="/aes/decryption">
+                        <p>
+                            <label for="encrypted_message_area">Enter the message you want to decrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="encrypted_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="decryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="decryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Decrypt" />
+                        </p>
+                    </form>
+                </div>
+                    {% if mode == "encryptionError" %}
+                        <script>encryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% elif mode == "decryptionError" %}
+                        <script>decryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+            </div>
+            <div class="description">
+                <h2>AES (Advanced Encryption Standard)</h2>
+                <p>The Advanced Encryption Standard (AES) is a specification for the encryption of data created by the U.S. National Institute of Standards and Technology (NIST) in 2001. AES has been adopted by the U.S. government and is now used worldwide. It supersedes the Data Encryption Standard (DES), which was published in 1977. The algorithm described by AES is a symmetric-key algorithm, meaning the same key is used for both encrypting and decrypting the data.</p>
+                <p><span class="important">How it works:</span> AES is based on a design principle known as a substitution–permutation network. It uses a fixed block size of 128 bits, and a key size of 128, 192, or 256 bits. AES operates on a 4 × 4 array of bytes.</p>
+                <p>The key size used for an AES cipher specifies the number of transformation rounds that convert the input, called the plaintext, into the final output, called the ciphertext. The number of rounds are as follows:</p>
+                <ul>
+                <li>10 rounds for 128-bit keys</li>
+                <li>12 rounds for 192-bit keys</li>
+                <li>14 rounds for 256-bit keys</li>
+                </ul>
+                <p>Each round consists of several processing steps, including one that depends on the encryption key itself. A set of reverse rounds are applied to transform ciphertext back into the original plaintext using the same encryption key. Here are the tranformation rounds used by AES:</p>
+                <ol>
+                <li>KeyExpansion – round keys are derived from the cipher key using the AES key schedule. AES requires a separate 128-bit round key block for each round plus one more</li>
+                <li>Initial round key addition (AddRoundKey): each byte of the state is combined with a byte of the round key using bitwise xor</li>
+                <li>9, 11 or 13 rounds:<ol>
+                    <li>SubBytes – a non-linear substitution step where each byte is replaced with another according to a lookup table</li>
+                    <li>ShiftRows – a transposition step where the last three rows of the state are shifted cyclically a certain number of steps</li>
+                    <li>MixColumns – a linear mixing operation which operates on the columns of the state, combining the four bytes in each column</li>
+                    <li>AddRoundKey</li>
+                    </ol></li>
+                <li>Final round (making 10, 12 or 14 rounds in total):
+                    <ol>
+                        <li>SubBytes</li>
+                        <li>ShiftRows</li>
+                        <li>AddRoundKey</li>
+                    </ol>
+                </li>
+                </ol>
+
+                <p class="important">Security level : HIGH</p>
+                <p>At present, there is no known practical attack that would allow someone without knowledge of the key to read data encrypted by AES when correctly implemented. Although the algebra behind AES encryption algorithm is quite simple, the size of its key makes AES practically unbreakable against brute-force attacks, and there is no known successful attack against against AES to this day. Like any encryption method AES can, however, be very easily cracked if the key is poorly chosen, hence the importance of choosing a strong key.</p>
+            </div>
+   
+        </div>
+    </body>
+    <footer>
+        <p>©2020 KryptX, Vincent Papelard</p>
+    </footer>
+
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>KryptX - RSA</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/base_style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/rsa.css') }}" />
+        <link rel='icon' href="{{ url_for('static',filename='files/favicon.ico') }}" type='image/x-icon'/ >
+        <script src="{{ url_for('static',filename='js/rsa.js') }}"></script>
+    </head>
+    <body>
+        <nav class="navigation_bar">
+            <div class="logo_container">
+                <a href="/"><img src="{{ url_for('static',filename='files/logo.png') }}" alt="logo" class="logo"/></a>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>ALL ENCRYPTION METHODS</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in allAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HISTORICAL</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in historicalAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>OUTDATED</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in outdatedAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>MODERN</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in modernAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HASHING</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in hashingAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <div class="central_zone">
+            <div id="encryption_zone">
+                <div id="buttons_zone">
+                    <button type="button" id="encrypt_button" class="encrypt_decrypt_button" onclick="encryptButtonClicked();">Encrypt</button>
+                    <button type="button" id="decrypt_button" class="encrypt_decrypt_button" onclick="decryptButtonClicked();">Decrypt</button>
+                    <button type="button" id="keys_generation_button" class="keys_generation_button" onclick="keysGenerationButtonClicked();">Generate keys pair</button>
+                </div>
+                {% if mode == "displayEncryptedText" %}
+                <div id="processed_text">
+                    <span>Encrypted text:</span>
+                    <button onclick="copyToClipboard('encrypted_Text')">Copy</button>
+                    <p id = "encrypted_Text">{{ encryptedMessage }}</p>
+                </div>
+                {% elif mode == "displayDecryptedText" %}
+                <div id="processed_text">
+                    <span>Decrypted text:</span>
+                    <button onclick="copyToClipboard('decrypted_Text')">Copy</button>
+                    <p id = "decrypted_Text">{{ decryptedMessage }}</p>
+                </div>
+                {% elif mode == "displayKeysPair" %}
+                <div id="processed_text">
+                    <span class="important">Private key:</span>
+                    <button onclick="copyToClipboard('rsa_private_key')">Copy</button>
+                    <p id = "rsa_private_key">{{ privateKey }}</p>
+                    <span class="important">Public key:</span>
+                    <button onclick="copyToClipboard('rsa_public_key')">Copy</button>
+                    <p id = "rsa_public_key">{{ publicKey }}</p>
+                </div>
+                {% endif %}
+                <div id="encryption_form">
+                    <form method="post" action="/rsa/encryption">
+                        <p>
+                            <label for="clear_message_area">Enter the message you want to encrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="clear_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="encryption_key_area">Enter your public key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="encryption_key_area" rows="13" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Encrypt" />
+                        </p>
+                    </form>
+                </div>
+                <div id="decryption_form">
+                    <form method="post" action="/rsa/decryption">
+                        <p>
+                            <label for="encrypted_message_area">Enter the message you want to decrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="encrypted_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="decryption_key_area">Enter your private key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="decryption_key_area" rows="20" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Decrypt" />
+                        </p>
+                    </form>
+                </div>
+                <div id="keys_generator">
+                    <form method="post" action="/rsa/keysgeneration">
+                        <p>
+                            <label for="encrypted_message_area">Click the button below to generate a RSA keys pair. This pair is made of two keys. The <span class="important">public key</span> is used for encryption and must be given to anyone who wants to send you a message. The <span class="important">private key</span> is used to decrypt a message encrypted with the corresponding public key, and must be secret. The keys generated here are 4096 bits long. The tool offered on this website encodes the encrypted text in base 64.</label><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Generate a RSA keys pair" />
+                        </p>
+                    </form>
+                </div>
+                    {% if mode == "encryptionError" %}
+                        <script>encryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% elif mode == "decryptionError" %}
+                        <script>decryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+            </div>
+            <div class="description">
+                <h2>RSA</h2>
+                <p>
+                    RSA (Rivest–Shamir–Adleman) is an algorithm used by modern computers to encrypt and decrypt messages. It is an asymmetric cryptographic algorithm. Asymmetric means that there are two different keys. This is also called public key cryptography, because one of the keys can be given to anyone. The other key must be kept private. The private key can have different lenghts, but usually it would be 512, 1024, 2048 or 4096 bits long. The tool offered by this app generates 4096-bit keys.
+                </p>
+                <p>
+                    <span class="important">How it works: </span>The RSA algorithm involves four steps:
+                </p>
+                <ol>
+                    <li>Keys pair generation: first you need to generate two keys: a public key used to encrypt messages, and a private key used for decryption. The public key can be given to anyone, but the private key must remain secret.</li>
+                    <li>Public key distribution: you must know someone’s public key in order to send them encrypted messages.<br>
+                        Suppose that Bob wants to send information to Alice. If they decide to use RSA, Bob must know Alice's public key to encrypt the message and Alice must use her private key to decrypt the message. To enable Bob to send his encrypted messages, Alice transmits her public key to Bob via a reliable, but not necessarily secret, route. Alice's private key is never distributed.</li>
+                    <li>Encryption: Bob uses Alice’s public key to encrypt his message.</li>
+                    <li>Decryption: Alice uses her private key to decrypt the message.</li>
+                </ol>
+                <p class="important">
+                    Security level: HIGH, BUT...
+                </p>
+                <p>
+                    As far as we know, the RSA algorithm cannot currently be cracked by a brute-force attack, under two conditions:
+                </p>
+                <ol>
+                    <li>The algorithm must be properly implemented in the system using it</li>
+                    <li>The key must be long enough. 2048 bits is now the minimum size recommended for RSA keys.</li>
+                </ol>
+            </div>
+   
+        </div>
+    </body>
+    <footer>
+        <p>©2020 KryptX, Vincent Papelard</p>
+    </footer>
+
+</html>

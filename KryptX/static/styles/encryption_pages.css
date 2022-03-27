@@ -1,0 +1,100 @@
+.central_zone
+{
+    display: flex;
+    flex-direction: row;
+    align-items: top;
+    /*width: 90%;*/
+    height: 88%;
+    width: auto;
+    justify-content: space-around;
+    padding: 10px 0px 10px 0px;
+    
+    
+}
+#encryption_zone:nth-child(1)
+{
+    width: 60%;
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    overflow: auto;
+    
+    padding: 20px;
+}
+#encryption_form
+{
+    display: none;
+    height: 80%;
+}
+#decryption_form
+{
+    display: none;
+    height: 80%;
+}
+.plugboard_settings_half
+{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: space-around;
+    padding: 10px;
+}
+#buttons_zone
+{
+    /*flex: 2;*/
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 20px;
+}
+.encrypt_decrypt_button
+{
+    background-color: #1761a0;
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    width: 240px;
+    height: 80px;
+}
+.centered_form_content
+{
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+}
+.centered_form_button
+{
+    /*justify-content: center;
+    display: block;*/
+    background-color: #74d14c;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+
+    text-decoration: none;
+    font-size: 20px;
+    width: 150px;
+    height: 50px;
+}
+.description:nth-child(2)
+{
+    border: 1px black solid;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 40%;
+    overflow: auto;
+    
+    /*flex: 1;*/
+}
+.error
+{
+    color: red;
+}

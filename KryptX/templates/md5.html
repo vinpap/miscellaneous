@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>KryptX - MD5</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/base_style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/md5.css') }}" />
+        <link rel='icon' href="{{ url_for('static',filename='files/favicon.ico') }}" type='image/x-icon'/ >
+        <script src="{{ url_for('static',filename='js/base_script.js') }}"></script>
+    </head>
+    <body>
+        <nav class="navigation_bar">
+            <div class="logo_container">
+                <a href="/"><img src="{{ url_for('static',filename='files/logo.png') }}" alt="logo" class="logo"/></a>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>ALL ENCRYPTION METHODS</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in allAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HISTORICAL</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in historicalAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>OUTDATED</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in outdatedAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>MODERN</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in modernAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HASHING</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in hashingAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <div class="central_zone">
+            <div id="encryption_zone">
+                {% if mode == "displayEncryptedText" %}
+                <div id="processed_text">
+                    <span>Hashed text:</span>
+                    <button onclick="copyToClipboard('hashed_Text')">Copy</button>
+                    <p id="hashed_Text">{{ encryptedMessage }}</p>
+                </div>
+                {% endif %}
+                <div id="encryption_form">
+                    <form method="post" action="/md5/encryption">
+                        <p>
+                            <label for="clear_message_area">Enter the message you want to hash here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="clear_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Hash" />
+                        </p>
+                    </form>
+                </div>
+                    {% if mode == "encryptionError" %}
+                        <script>encryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% elif mode == "decryptionError" %}
+                        <script>decryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+            </div>
+            <div class="description">
+                <h2>MD5 (Message Digest 5)</h2>
+                <p>
+                    The MD5 message-digest algorithm is a widely used hash function producing a 128-bit hash value. A hash function is any function that can be used to map data of arbitrary size to fixed-size values. The values returned by a hash function are called hash values, hash codes, digests, or simply hashes. Hash functions and their associated hash tables are used in data storage and retrieval applications to access data in a small and nearly constant time per retrieval, and storage space only fractionally greater than the total space required for the data or records themselves. 
+                </p>
+                <p>
+                    Hash functions are sometimes used to check the integrity of data. By calculating the hash values of two files and comparing them, it is possible to ensure that both files are identical. This is especially useful to make sure that a downloaded file has not been corrupted or tampered with in any way.
+                </p>
+                <p>
+                    MD5 was designed in 1991 to replace its predecessor MD4, which was deemed to be likely insecure. 
+                </p>
+                <p>
+                    <span class="important">How it works: </span>MD5 processes a variable-length message into a fixed-length output of 128 bits. The input message is broken up into chunks of 512-bit blocks (sixteen 32-bit words); the message is padded so that its length is divisible by 512. The padding works as follows: first a single bit, 1, is appended to the end of the message. This is followed by as many zeros as are required to bring the length of the message up to 64 bits fewer than a multiple of 512. The remaining bits are filled up with 64 bits representing the length of the original message, modulo 264.
+                </p>
+                <p>
+                    The main MD5 algorithm operates on a 128-bit state, divided into four 32-bit words, denoted A, B, C, and D. These are initialized to certain fixed constants. The main algorithm then uses each 512-bit message block in turn to modify the state. The processing of a message block consists of four similar stages, termed rounds; each round is composed of 16 similar operations based on a non-linear function F, modular addition, and left rotation. There are four possible functions; a different one is used in each round.
+                </p>
+                <p class="important">
+                    Security level: LOW
+                </p>
+                <p>
+                    One basic requirement of any cryptographic hash function is that it should be computationally infeasible to find two distinct messages that hash to the same value. MD5 fails this requirement catastrophically; such collisions can be found in seconds on an ordinary home computer.
+                </p>
+                <p>
+                    The weaknesses of MD5 have been exploited in the field, most infamously by the Flame malware in 2012. As of 2019, MD5 continues to be widely used, in spite of its well-documented weaknesses and deprecation by security experts.
+                </p>
+            </div>
+   
+        </div>
+    </body>
+    <footer>
+        <p>©2020 KryptX, Vincent Papelard</p>
+    </footer>
+
+</html>

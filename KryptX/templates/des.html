@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>KryptX - DES</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/base_style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/encryption_pages.css') }}" />
+        <link rel='icon' href="{{ url_for('static',filename='files/favicon.ico') }}" type='image/x-icon'/ >
+        <script src="{{ url_for('static',filename='js/base_script.js') }}"></script>
+    </head>
+    <body>
+        <nav class="navigation_bar">
+            <div class="logo_container">
+                <a href="/"><img src="{{ url_for('static',filename='files/logo.png') }}" alt="logo" class="logo"/></a>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>ALL ENCRYPTION METHODS</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in allAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HISTORICAL</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in historicalAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>OUTDATED</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in outdatedAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>MODERN</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in modernAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HASHING</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in hashingAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <div class="central_zone">
+            <div id="encryption_zone">
+                <div id="buttons_zone">
+                    <button type="button" id="encrypt_button" class="encrypt_decrypt_button" onclick="encryptButtonClicked();">Encrypt</button>
+                    <button type="button" id="decrypt_button" class="encrypt_decrypt_button" onclick="decryptButtonClicked();">Decrypt</button>
+                </div>
+                {% if mode == "displayEncryptedText" %}
+                <div id="processed_text">
+                    <span>Encrypted text:</span>
+                    <button onclick="copyToClipboard('encrypted_Text')">Copy</button>
+                    <p id="encrypted_Text">{{ encryptedMessage }}</p>
+                </div>
+                {% elif mode == "displayDecryptedText" %}
+                <div id="processed_text">
+                    <span>Decrypted text:</span>
+                    <button onclick="copyToClipboard('decrypted_Text')">Copy</button>
+                    <p id="decrypted_Text">{{ decryptedMessage }}</p>
+                </div>
+                {% endif %}
+                <div id="encryption_form">
+                    <form method="post" action="/des/encryption">
+                        <p>
+                            <label for="clear_message_area">Enter the message you want to encrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="clear_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="encryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="encryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Encrypt" />
+                        </p>
+                    </form>
+                </div>
+                <div id="decryption_form">
+                    <form method="post" action="/des/decryption">
+                        <p>
+                            <label for="encrypted_message_area">Enter the message you want to decrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="encrypted_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="decryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="decryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Decrypt" />
+                        </p>
+                    </form>
+                </div>
+                    {% if mode == "encryptionError" %}
+                        <script>encryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% elif mode == "decryptionError" %}
+                        <script>decryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+            </div>
+            <div class="description">
+                <h2>DES (Data Encryption Standard)</h2>
+                <p>
+                    The Data Encryption Standard (DES) is a symmetric-key algorithm for the encryption of digital data. Although its short key length of 56 bits makes it too insecure for applications, it has been highly influential in the advancement of cryptography.
+                </p>
+                <p>
+                    Developed in the early 1970s at IBM, the algorithm was submitted to the National Bureau of Standards (NBS) following the agency's invitation to propose a candidate for the protection of sensitive, unclassified electronic government data. In 1976, the NBS selected a slightly modified version which became a standard encryption technique for the US government. DES was then widely adopted worldwide.
+                </p>
+                <p>
+                    <span class="important">How it works: </span>DES is a typical block cipher—an algorithm that takes a fixed-length string of plaintext bits and transforms it through a series of complicated operations into another ciphertext bitstring of the same length. In the case of DES, the block size is 64 bits. The key used to carry out the encryption is 64 bits long. However, only 56 of these bits are actually used to encrypt the data.
+                </p>
+                <p>
+                    During the encryption, the data goes through 16 identical steps of processing, called rounds.
+                </p>
+                <p class="important">
+                    Security level: LOW
+                </p>
+                <p>
+                    DES is insecure due to the relatively short 56-bit key size. In January 1999, a DES key was publicly broken in 22 hours and 15 minutes. The weakness of DES as en encryption standard has since been demonstrated many times. Most attacks against DES are brute-force attacks that try every possible key in turn.
+                </p>
+                <p>
+                    The weaknesses of this encryption method led to the replacement of DES with AES in 2002. Stronger variants of DES have also been created, such as Double DES and Triple DES. These variants respectively use keys of 128 or 192 bits. They encrypt each block of data twice (Double DES) or thrice (Triple DES).
+                </p>
+                <p>
+                    Depending on the length of the key you type on that webpage (64, 128 or 192 bits), your message will automatically be encrypted using DES, Double DES or Triple DES.
+                </p>
+            </div>
+   
+        </div>
+    </body>
+    <footer>
+        <p>©2020 KryptX, Vincent Papelard</p>
+    </footer>
+
+</html>

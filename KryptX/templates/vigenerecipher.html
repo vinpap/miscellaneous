@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>KryptX - Vigenère Cipher</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/base_style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/encryption_pages.css') }}" />
+        <link rel='icon' href="{{ url_for('static',filename='files/favicon.ico') }}" type='image/x-icon'/ >
+        <script src="{{ url_for('static',filename='js/base_script.js') }}"></script>
+    </head>
+    <body>
+        <nav class="navigation_bar">
+            <div class="logo_container">
+                <a href="/"><img src="{{ url_for('static',filename='files/logo.png') }}" alt="logo" class="logo"/></a>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>ALL ENCRYPTION METHODS</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in allAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HISTORICAL</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in historicalAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>OUTDATED</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in outdatedAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>MODERN</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in modernAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HASHING</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in hashingAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <div class="central_zone">
+            <div id="encryption_zone">
+                <div id="buttons_zone">
+                    <button type="button" id="encrypt_button" class="encrypt_decrypt_button" onclick="encryptButtonClicked();">Encrypt</button>
+                    <button type="button" id="decrypt_button" class="encrypt_decrypt_button" onclick="decryptButtonClicked();">Decrypt</button>
+                </div>
+                {% if mode == "displayEncryptedText" %}
+                <div id="processed_text">
+                    <span>Encrypted text:</span>
+                    <button onclick="copyToClipboard('encrypted_Text')">Copy</button>
+                    <p id="encrypted_Text">{{ encryptedMessage }}</p>
+                </div>
+                {% elif mode == "displayDecryptedText" %}
+                <div id="processed_text">
+                    <span>Decrypted text:</span>
+                    <button onclick="copyToClipboard('decrypted_Text')">Copy</button>
+                    <p id="decrypted_Text">{{ decryptedMessage }}</p>
+                </div>
+                {% endif %}
+                <div id="encryption_form">
+                    <form method="post" action="/vigenerecipher/encryption">
+                        <p>
+                            <label for="clear_message_area">Enter the message you want to encrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="clear_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="encryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="encryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Encrypt" />
+                        </p>
+                    </form>
+                </div>
+                <div id="decryption_form">
+                    <form method="post" action="/vigenerecipher/decryption">
+                        <p>
+                            <label for="encrypted_message_area">Enter the message you want to decrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="encrypted_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="decryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="decryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Decrypt" />
+                        </p>
+                    </form>
+                </div>
+                    {% if mode == "encryptionError" %}
+                        <script>encryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% elif mode == "decryptionError" %}
+                        <script>decryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+            </div>
+            <div class="description">
+                <h2>Vigenère Cipher</h2>
+                <p>
+                    The Vigenère cipher is a method of encrypting alphabetic text by using a series of interwoven Caesar ciphers, based on the letters of a keyword. It employs a form of polyalphabetic substitution.
+                </p>
+                <p>
+                    <span class="important">How it works: </span>In a Caesar cipher, each letter of the alphabet is shifted along some number of places. For example, in a Caesar cipher of shift 3, A would become D, B would become E, Y would become B and so on. The Vigenère cipher has several Caesar ciphers in sequence with different shift values.
+                </p>
+                <p>
+                    To encrypt, a table of alphabets can be used, termed a tabula recta, Vigenère square or Vigenère table. It has the alphabet written out 26 times in different rows, each alphabet shifted cyclically to the left compared to the previous alphabet, corresponding to the 26 possible Caesar ciphers. At different points in the encryption process, the cipher uses a different alphabet from one of the rows. The alphabet used at each point depends on a repeating keyword.
+                </p>
+                <p>
+                    For example, suppose that the plaintext to be encrypted is ATTACKATDAWN.
+                </p>
+                <p>
+                    The person sending the message chooses a keyword and repeats it until it matches the length of the plaintext, for example, the keyword "LEMON": LEMONLEMONLE
+                </p>
+                <p>
+                    Each row starts with a key letter. The rest of the row holds the letters A to Z (in shifted order). Although there are 26 key rows shown, a code will use only as many keys (different alphabets) as there are unique letters in the key string, here just 5 keys: {L, E, M, O, N}. For successive letters of the message, successive letters of the key string will be taken and each message letter enciphered by using its corresponding key row. The next letter of the key is chosen, and that row is gone along to find the column heading that matches the message character. The letter at the intersection of [key-row, msg-col] is the enciphered letter.
+                </p>
+                <p>
+                    For example, the first letter of the plaintext, A, is paired with L, the first letter of the key. Therefore, row L and column A of the Vigenère square are used, namely L. Similarly, for the second letter of the plaintext, the second letter of the key is used. The letter at row E and column T is X. The rest of the plaintext is enciphered in a similar fashion:
+                </p>
+                <p>
+                    Plaintext:	ATTACKATDAWN<br>
+                    Key:	LEMONLEMONLE<br>
+                    Ciphertext:	LXFOPVEFRNHR
+                </p>
+                <p>
+                    Decryption is performed by going to the row in the table corresponding to the key, finding the position of the ciphertext letter in that row and then using the column's label as the plaintext. For example, in row L (from LEMON), the ciphertext L appears in column A, which is the first plaintext letter. Next, in row E (from LEMON), the ciphertext X is located in column T. Thus T is the second plaintext letter.
+                </p>
+                <p class="important">
+                    Security level: LOW
+                </p>
+                <p>
+                    This encryption algorithm is totally obsolete today. Different methods have been found to break the Vigenère Cipher. One of the weaknesses of this algorithm is that the length of its keyword can be found by detecting repetitions in the encrypted text. With today’s computing power, it is not difficult for an attacker to break that code.
+                </p>
+            </div>
+   
+        </div>
+    </body>
+    <footer>
+        <p>©2020 KryptX, Vincent Papelard</p>
+    </footer>
+
+</html>

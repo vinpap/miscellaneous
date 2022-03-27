@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>KryptX - Blowfish</title>
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/base_style.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static',filename='styles/encryption_pages.css') }}" />
+        <link rel='icon' href="{{ url_for('static',filename='files/favicon.ico') }}" type='image/x-icon'/ >
+        <script src="{{ url_for('static',filename='js/base_script.js') }}"></script>
+    </head>
+    <body>
+        <nav class="navigation_bar">
+            <div class="logo_container">
+                <a href="/"><img src="{{ url_for('static',filename='files/logo.png') }}" alt="logo" class="logo"/></a>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>ALL ENCRYPTION METHODS</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in allAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HISTORICAL</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in historicalAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>OUTDATED</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in outdatedAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>MODERN</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in modernAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="dropdown">
+                <div class="dropbtn">
+                    <span>HASHING</span>
+                </div>
+                <div class="dropdown-content">
+                    {% for item in hashingAlgos %}
+                    <a href="{{ item[1] }}">{{ item[0] }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </nav>
+        <div class="central_zone">
+            <div id="encryption_zone">
+                <div id="buttons_zone">
+                    <button type="button" id="encrypt_button" class="encrypt_decrypt_button" onclick="encryptButtonClicked();">Encrypt</button>
+                    <button type="button" id="decrypt_button" class="encrypt_decrypt_button" onclick="decryptButtonClicked();">Decrypt</button>
+                </div>
+                {% if mode == "displayEncryptedText" %}
+                <div id="processed_text">
+                    <span>Encrypted text:</span>
+                    <button onclick="copyToClipboard('encrypted_Text')">Copy</button>
+                    <p id="encrypted_Text">{{ encryptedMessage }}</p>
+                </div>
+                {% elif mode == "displayDecryptedText" %}
+                <div id="processed_text">
+                    <span>Decrypted text:</span>
+                    <button onclick="copyToClipboard('decrypted_Text')">Copy</button>
+                    <p id="decrypted_Text">{{ decryptedMessage }}</p>
+                </div>
+                {% endif %}
+                <div id="encryption_form">
+                    <form method="post" action="/blowfish/encryption">
+                        <p>
+                            <label for="clear_message_area">Enter the message you want to encrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="clear_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="encryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="encryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Encrypt" />
+                        </p>
+                    </form>
+                </div>
+                <div id="decryption_form">
+                    <form method="post" action="/blowfish/decryption">
+                        <p>
+                            <label for="encrypted_message_area">Enter the message you want to decrypt here: </label><br/>
+                            <textarea class="centered_form_content" name="message" id="encrypted_message_area" rows="10" cols="50" required></textarea><br/><br/>
+                            <label for="decryption_key_area">Enter your key here: </label><br/>
+                            <textarea class="centered_form_content" name="key_area" id="decryption_key_area" cols="50" required></textarea><br/><br/>
+                            <input class="centered_form_button" type="submit" value="Decrypt" />
+                        </p>
+                    </form>
+                </div>
+                    {% if mode == "encryptionError" %}
+                        <script>encryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% elif mode == "decryptionError" %}
+                        <script>decryptButtonClicked();</script>
+                        <span class="error">{{ error }}</span>
+                    {% endif %}
+            </div>
+            <div class="description">
+                <h2>Blowfish</h2>
+                <p>
+                    Blowfish is a symmetric-key block cipher, designed in 1993 by Bruce Schneier and included in many cipher suites and encryption products. Blowfish provides a good encryption rate in software and is considered safe in most cases. However, the Advanced Encryption Standard (AES) now receives more attention.
+                </p>
+                <p>
+                    Schneier designed Blowfish as a general-purpose algorithm, intended as an alternative to the aging DES and free of the problems and constraints associated with other algorithms. At the time Blowfish was released, many other designs were proprietary, encumbered by patents or were commercial or government secrets. Schneier has stated that, "Blowfish is unpatented, and will remain so in all countries. The algorithm is hereby placed in the public domain, and can be freely used by anyone."
+                </p>
+                <p>
+                    <span class="important">How it works:</span> Blowfish has a 64-bit block size and a variable key length from 32 bits up to 448 bits. It is a 16-round cipher. Every round consists of 4 actions. Decryption is almost exactly the same as encryption.
+                </p>
+                <p class="important">
+                    Security level: MEDIUM
+                </p>
+                <p>
+                    Although Blowfish has never been cracked so far, Bruce Schneier recommends Twofish, a cipher derivated from Blowfish, for modern applications. The main safety concern about Blowfish is the small size of its blocks (64 bits), which can make it vulnerable to threats such as collision attacks.
+                </p>
+            </div>
+   
+        </div>
+    </body>
+    <footer>
+        <p>©2020 KryptX, Vincent Papelard</p>
+    </footer>
+
+</html>
